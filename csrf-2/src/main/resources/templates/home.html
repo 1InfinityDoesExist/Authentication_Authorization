@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.com"></html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	Hi Patel !!!
+	<br>
+	<form action="/saveData" method="post">
+		<input name="uname" /><br> 
+		<input type="hidden" th:name="${_csrf.parameterName}"
+		th:value="${_csrf.token}"/>
+		
+		<input type="submit" value="Save Record" />
+	</form>
+</body>
+</html>
