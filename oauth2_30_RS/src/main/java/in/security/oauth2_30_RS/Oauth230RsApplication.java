@@ -1,0 +1,13 @@
+package in.security.oauth2_30_RS;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class Oauth230RsApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(Oauth230RsApplication.class, args);
+	}
+
+}
