@@ -14,6 +14,8 @@ import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenCo
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
+import security.oauth2_19.security.MongoClientDetailsService;
+
 @Configuration
 @EnableAuthorizationServer
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
@@ -29,11 +31,19 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 		security.checkTokenAccess("permitAll()").tokenKeyAccess("isAuthenticated()");
 	}
 
+	@Bean
+	public MongoClientDetailsService clientDetailsService() {
+		return new MongoClientDetailsService();
+	}
+
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-		clients.inMemory().withClient("client").secret("secret").scopes("read", "write")
-				.authorizedGrantTypes("password", "refresh_token").accessTokenValiditySeconds(50000)
-				.refreshTokenValiditySeconds(500000).and().withClient("client1").secret("secret1");
+//		clients.inMemory().withClient("client").secret("secret").scopes("read", "write")
+//				.authorizedGrantTypes("password", "refresh_token").accessTokenValiditySeconds(50000)
+//				.refreshTokenValiditySeconds(500000).and().withClient("client1").secret("secret1");
+
+		clients.withClientDetails(clientDetailsService());
+
 	}
 
 	@Override
@@ -41,6 +51,28 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 		endpoints.authenticationManager(authenticationManager).tokenStore(tokenStore())
 				.accessTokenConverter(converter());
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	@Bean
 	public TokenStore tokenStore() {
