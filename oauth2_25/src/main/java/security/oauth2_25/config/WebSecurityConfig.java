@@ -1,8 +1,8 @@
-package security.oauth2_19.config;
+package security.oauth2_25.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -25,23 +25,31 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	public UserDetailsService userDetailsService() {
 		InMemoryUserDetailsManager inMemoryUserDetailsManager = new InMemoryUserDetailsManager();
-		UserDetails userDetails = User.withUsername("patel").password("patel").authorities("read", "write").build();
-		inMemoryUserDetailsManager.createUser(userDetails);
-		
-		
+		UserDetails user1 = User.withUsername("patel1").password("patel1").authorities("read").build();
+		UserDetails user2 = User.withUsername("patel2").password("patel2").authorities("write").build();
+		inMemoryUserDetailsManager.createUser(user1);
+		inMemoryUserDetailsManager.createUser(user2);
 		return inMemoryUserDetailsManager;
-	}
-
-	@Override
-	@Bean
-	public AuthenticationManager authenticationManagerBean() throws Exception {
-		return super.authenticationManagerBean();
 	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.httpBasic();
-		http.csrf().disable();
-		// http.authorizeRequests().anyRequest().permitAll();
+		// mvnMatcher()
+		// antMatcher()
+
+		// /a/* it means /a/0-1
+		// /a/** it means /a/0-more
+		// .authenticated() looks for only validation not for authorization
+//		http.authorizeRequests().mvcMatchers("/**").hasAuthority("read").mvcMatchers("/c/{name}").authenticated()
+//				.anyRequest().denyAll();
+
+//		http.authorizeRequests().antMatchers("/a/**").hasAuthority("read").anyRequest().denyAll();
+
+		
+		//don't use antMatchers() /a authenticate try with /a/ it also work.
+		//to solve it use mvc matchers
+		http.authorizeRequests().mvcMatchers(HttpMethod.GET,"/a").authenticated()
+		.anyRequest().permitAll();
 	}
 }

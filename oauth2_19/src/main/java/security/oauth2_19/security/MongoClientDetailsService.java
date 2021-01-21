@@ -23,7 +23,12 @@ public class MongoClientDetailsService implements ClientDetailsService {
 
 	// tenantId + ClientId combination will work...
 
-//	12345 ---- gaian
+//	12345 ---- omni
 //	12345 -----epg
+	
+	
+	
+	//1234 ---- omni
+	// 4567 ----- omni
 
 }
