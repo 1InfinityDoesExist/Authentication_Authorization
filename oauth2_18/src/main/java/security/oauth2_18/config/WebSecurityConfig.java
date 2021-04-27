@@ -3,6 +3,7 @@ package security.oauth2_18.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.User;
@@ -24,7 +25,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	public UserDetailsService userDetailsService() {
 		InMemoryUserDetailsManager inMemoryUserDetailsManager = new InMemoryUserDetailsManager();
-		UserDetails userDetails = User.withUsername("patel").password("patel").authorities("read", "write").build();
+		UserDetails userDetails = User.withUsername("patel").password("patel").authorities("ROLE_ADMIN").build();
 		inMemoryUserDetailsManager.createUser(userDetails);
 		return inMemoryUserDetailsManager;
 	}
@@ -33,6 +34,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		return super.authenticationManagerBean();
+	}
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.httpBasic().and().authorizeRequests().antMatchers("/.well-known/jwks.json/**").permitAll().anyRequest()
+				.authenticated().and().csrf().disable();
+
 	}
 
 }
