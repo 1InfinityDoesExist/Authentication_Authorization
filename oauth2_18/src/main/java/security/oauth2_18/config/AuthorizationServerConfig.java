@@ -1,12 +1,17 @@
 package security.oauth2_18.config;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.security.KeyPair;
+import java.security.MessageDigest;
+import java.security.cert.Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 
+import org.bouncycastle.operator.OperatorCreationException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -27,6 +32,8 @@ import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.KeyUse;
 import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.util.Base64;
+import com.nimbusds.jose.util.Base64URL;
 
 @Configuration
 @EnableAuthorizationServer
@@ -84,9 +91,13 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	}
 
 	@Bean
-	public JWKSet jwkSet() {
+	public JWKSet jwkSet() throws GeneralSecurityException, IOException, OperatorCreationException {
+		MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
+		Certificate cert = CertificateGenerator.generateCertificate(keyPair());
 		RSAKey.Builder builder = new RSAKey.Builder((RSAPublicKey) keyPair().getPublic()).keyUse(KeyUse.SIGNATURE)
-				.algorithm(JWSAlgorithm.RS256).keyID(JWK_KID);
+				.algorithm(JWSAlgorithm.RS256).keyID(JWK_KID)
+				.x509CertChain(Collections.singletonList(Base64.encode(cert.getEncoded())))
+				.x509CertSHA256Thumbprint(Base64URL.encode(sha256.digest(cert.getEncoded())));
 		return new JWKSet(builder.build());
 	}
 }
