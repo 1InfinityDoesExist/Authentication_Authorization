@@ -26,7 +26,7 @@ import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
-import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
+import org.springframework.security.rsa.crypto.KeyStoreKeyFactory;
 
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -89,6 +89,18 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 				"ssia123".toCharArray());
 		return keyPairFactory.getKeyPair("ssia");
 	}
+
+//	private KeyPair keyPair() {
+//		KeyPair keyPair;
+//		try {
+//			KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+//			keyPairGenerator.initialize(2048);
+//			keyPair = keyPairGenerator.generateKeyPair();
+//		} catch (Exception ex) {
+//			throw new IllegalStateException(ex);
+//		}
+//		return keyPair;
+//	}
 
 	@Bean
 	public JWKSet jwkSet() throws GeneralSecurityException, IOException, OperatorCreationException {
